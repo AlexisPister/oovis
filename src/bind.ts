@@ -17,30 +17,15 @@ class Binder {
 
     run(markSpecs) {
         for (let markspec of markSpecs) {
-            // let sceneGroup = new GroupMark();
-
-            let group = this.dataToMark(markspec);
-            // sceneGroup.children = group;
-            console.log("gg ", group)
-
-            this.sceneGraph.root.children.push(group);
+            markspec.toBindedMark(this.data, this.sceneGraph.root);
         }
 
         console.log(this.sceneGraph);
     }
-
-    dataToMark(markSpec: Mark) {
-        let markGroup= [];
-        for (let datum of this.data) {
-            let mark = markSpec.toMark(datum);
-            markGroup.push(mark);
-        }
-        return markGroup;
-    }
 }
 
 
-export function bind(parent: HTMLElement, data: Data, ...marks: Mark[]) {
+export function bind(parent: HTMLCanvasElement, data: Data, ...marks: Mark[]) {
     // let renderer = findRenderer();
     // let eventHandler = findHandler();
 
@@ -51,5 +36,7 @@ export function bind(parent: HTMLElement, data: Data, ...marks: Mark[]) {
 
     let renderer = new Renderer(parent, binder.sceneGraph);
     renderer.render();
+
+    return {binder, renderer}
 }
 

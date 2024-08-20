@@ -11,17 +11,50 @@ interface MarkGroup<Mark> {
 
 
 
+export class SceneGraphNode {
+    id: string;
+    type: string;
+    children: SceneGraphNode[];
+    parent: SceneGraphNode;
+    items: Array<Mark>;
+
+    constructor(type: string, parent) {
+        // TODO
+        this.id = "1";
+        this.type = type;
+
+        this.parent = parent;
+        if (this.parent) {
+            this.parent.children.push(this);
+        }
+
+        this.children = [];
+        this.items = [];
+    }
+}
+
+
+export class BindedMark extends SceneGraphNode{
+    constructor(type: string, parent, children) {
+        super(type, parent, children)
+    }
+
+    addItem(mark: Mark) {
+        this.items.push(mark);
+    }
+}
+
+
 
 
 export class Mark {
     id: string;
-    children: MarkGroup[];
-    parent?: Mark | null;
-    rotation?: number;
-    scale?: { x: number; y: number };
+    // children: MarkGroup[];
+    // parent?: Mark | null;
+    // rotation?: number;
+    // scale?: { x: number; y: number };
 
     constructor() {
-        this.children = [];
     }
 
     bounds() {
@@ -46,10 +79,7 @@ function computeParam(param: NumberArgument, datum: Datum) {
 }
 
 
-
-
 export class GroupMark extends Mark {
-    type: SceneType;
 
     constructor() {
         super();
@@ -81,7 +111,7 @@ export class Rect extends Mark {
         ctx.fill();
     }
 
-    toMark(datum: Datum) {
+    datumToMark(datum: Datum) {
         let x = computeParam(this.x, datum);
         let y = computeParam(this.y, datum);
         let width = computeParam(this.width, datum);
@@ -91,9 +121,11 @@ export class Rect extends Mark {
         return mark;
     }
 
-    toMarkGroup(data: Data) {
+    toBindedMark(data: [], parentNode: SceneGraphNode) {
+        let bindedMark = new BindedMark(this.constructor.name, parentNode, null);
         for (let datum of data) {
-            this.toMark(datum);
+            bindedMark.addItem(this.datumToMark(datum));
         }
+        return bindedMark;
     }
 }

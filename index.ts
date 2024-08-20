@@ -3,11 +3,12 @@ import {Rect} from "./src/marks";
 
 let canvas = document.querySelector("canvas");
 
-bind(
+let vis = bind(
     canvas, [10, 20, 30],
-    new Rect(10, 20, 30, 40),
-    // new Circle()
+    new Rect(d => d * 4 , 20, 30, 40),
 );
+
+// vis.update([20, 10, 1000])
 
 
 

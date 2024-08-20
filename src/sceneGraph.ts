@@ -1,14 +1,10 @@
-import {Mark} from "./marks";
+import {Mark, SceneGraphNode} from "./marks";
 
 
 export class SceneGraph {
-    root: Mark;
+    root: SceneGraphNode;
 
     constructor() {
-        this.root = new Mark();
-    }
-
-    addMark() {
-
+        this.root = new SceneGraphNode("root", null);
     }
 }

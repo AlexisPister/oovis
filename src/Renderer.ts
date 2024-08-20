@@ -12,11 +12,11 @@ export class Renderer {
     }
 
     render() {
-        console.log(this.sceneGraph);
-        for (let markGroup of this.sceneGraph.root.children) {
-            console.log(markGroup)
+        // console.log(this.sceneGraph);
+        for (let bindedMark of this.sceneGraph.root.children) {
+            // console.log(bindedMark)
 
-            for (let mark of markGroup) {
+            for (let mark of bindedMark.items) {
                 mark.render(this.ctx);
             }
         }
