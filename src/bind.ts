@@ -1,12 +1,13 @@
 import {SceneGraph} from "../src/sceneGraph";
 import {Mark} from "./marks";
 import {Renderer} from "./Renderer";
+import {deepEqual} from "./utils.ts";
 
-export type Data = Array<any>;
+export type Data = Array<Datum>;
 export type Datum = any;
 
 
-class Binder {
+export class Binder {
     data: Data;
     sceneGraph: SceneGraph;
 
@@ -21,6 +22,44 @@ class Binder {
         }
 
         console.log(this.sceneGraph);
+    }
+
+    updateData(newData: Data, matchBy: (d: Datum) => any) {
+        const updatedData: Datum[] = [];
+        const enteredData: Datum[] = [];
+        const removedData: Datum[] = [];
+
+        let matchFn = (d1: Datum, d2: Datum) => {
+            // return deepEqual(matchBy(d1), matchBy(d2))
+            return matchBy(d1) === matchBy(d2)
+        }
+
+        // Create a map for quick lookups
+        const map = new Map<Datum, Datum>();
+
+        // Fill the map with elements from arr2
+        this.data.forEach(item => {
+            map.set(item, item);
+        });
+
+        // Iterate over arr1 and determine newData and intersect
+        newData.forEach(item2 => {
+            const matchedInArr = Array.from(map.values()).find(item1 => matchFn(item1, item2));
+            if (matchedInArr) {
+                updatedData.push(item2);
+                // Remove the matched item to handle any duplicates
+                map.delete(matchedInArr);
+            } else {
+                enteredData.push(item2);
+            }
+        });
+
+        // The remaining items in map2 are the removedData
+        map.forEach((_, key) => {
+            removedData.push(key);
+        });
+
+        return {enteredData, removedData, updatedData};
     }
 }
 
