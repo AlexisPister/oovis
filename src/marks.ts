@@ -47,7 +47,7 @@ export class BindedMark extends SceneGraphNode{
 
 
 
-export class Mark {
+export abstract class Mark {
     id: string;
     // children: MarkGroup[];
     // parent?: Mark | null;
@@ -61,9 +61,11 @@ export class Mark {
         //     Abstract
     }
 
-    render() {
-        //     Abstract
-    }
+    abstract datumToMark(datum: Datum): Mark
+
+    abstract toBindedMark(data: [], parentNode: SceneGraphNode)
+
+    abstract render()
 }
 
 
@@ -87,7 +89,46 @@ export class GroupMark extends Mark {
 }
 
 
+interface Point {
+    x: number,
+    y: number
+}
+
+
+export class Line extends Mark {
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+
+    constructor(x1, y1, x2, y2) {
+        super();
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+    }
+
+    render(ctx: CanvasRenderingContext2D) {
+    }
+
+}
+
+
 export class Path extends Mark {
+    points: Point[];
+
+    constructor() {
+        super();
+    }
+
+    render(ctx: CanvasRenderingContext2D) {
+        ctx.beginPath(); // Start a new path
+
+        // ctx.path(this.x, this.y, this.width, this.height);
+
+        ctx.fill();
+    }
 
 }
 
@@ -129,3 +170,5 @@ export class Rect extends Mark {
         return bindedMark;
     }
 }
+
+
