@@ -5,8 +5,14 @@ let canvas = document.querySelector("canvas");
 
 let vis = bind(
     canvas, [10, 20, 30],
-    new Rect(d => d * 4 , 20, 30, 40),
+    new Rect(d => d * 4 , 20, 30, 40)
+        .on("mouseover", (d, mark) => {
+            mark.y = 20;
+
+        }, true),
 );
+
+// vis.on("mouseover", d = )
 
 // vis.update([20, 10, 1000])
 
