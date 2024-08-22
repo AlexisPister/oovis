@@ -1,18 +1,39 @@
 import {bind} from "./src/bind.ts";
-import {Rect} from "./src/marks";
+import {Group, Rect} from "./src/marks";
 
 let canvas = document.querySelector("canvas");
 
 let vis = bind(
     canvas, [10, 20, 30],
-    new Rect(d => d * 4 , 20, 30, 40)
-        .on("mouseover", (d, mark) => {
-            mark.y = 20;
-
-        }, true),
+    new Rect(d => d * 4 , 20, 30, 40),
+    new Group(
+        new Rect(100 , d => d * 3, 10, 10)
+    )
 );
 
-// vis.on("mouseover", d = )
+
+// let vis = bind(
+//     canvas, [10, 20, 30],
+//     new Rect(d => d * 4 , 20, 30, 40),
+//     new Group(
+//         new Rect(),
+//         new Line(),
+//         new Text(),
+//     ).on("mouseover", (d, mark) => {
+//             mark.y = 20;
+//             mark.rect.x = 20;
+//
+//         }, true),
+//     new Nested(
+//         d => d.x,
+//         new Rect((d, parent) => )
+//     )
+//
+//     [d => d.subArray,
+//     new Rect()]
+// );
+
+
 
 // vis.update([20, 10, 1000])
 

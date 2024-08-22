@@ -1,4 +1,5 @@
 import {Datum} from "./bind";
+import {SceneGraphNode} from "./sceneGraph.ts";
 
 
 
@@ -11,36 +12,11 @@ interface MarkGroup<Mark> {
 
 
 
-export class SceneGraphNode {
-    id: string;
-    type: string;
-    children: SceneGraphNode[];
-    parent: SceneGraphNode;
-    items: Array<Mark>;
-
-    constructor(type: string, parent) {
-        // TODO
-        this.id = "1";
-        this.type = type;
-
-        this.parent = parent;
-        if (this.parent) {
-            this.parent.children.push(this);
-        }
-
-        this.children = [];
-        this.items = [];
-    }
-}
 
 
-export class BindedMark extends SceneGraphNode{
+export class BindedMark extends SceneGraphNode {
     constructor(type: string, parent, children) {
         super(type, parent, children)
-    }
-
-    addItem(mark: Mark) {
-        this.items.push(mark);
     }
 }
 
@@ -81,10 +57,32 @@ function computeParam(param: NumberArgument, datum: Datum) {
 }
 
 
-export class GroupMark extends Mark {
+export class Group extends Mark {
+    marks: Mark[];
 
-    constructor() {
+    constructor(...marks: Mark[]) {
         super();
+        this.marks = marks;
+    }
+
+    datumToMark(datum: Datum) {
+        return;
+    }
+
+    toBindedMark(data: [], parentNode: SceneGraphNode) {
+        let groupBindedMark = new BindedMark(this.constructor.name, parentNode, null);
+
+        for (let mark of this.marks) {
+            console.log(22)
+            let bindedMark = mark.toBindedMark(data, groupBindedMark);
+            // groupBindedMark.addChild(bindedMark);
+        }
+
+        return groupBindedMark;
+    }
+
+    render() {
+        return;
     }
 }
 

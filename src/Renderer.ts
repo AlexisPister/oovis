@@ -1,4 +1,4 @@
-import {SceneGraph} from "./sceneGraph";
+import {SceneGraph, SceneGraphNode} from "./sceneGraph";
 
 export class Renderer {
     canvas: HTMLCanvasElement;
@@ -12,13 +12,21 @@ export class Renderer {
     }
 
     render() {
-        // console.log(this.sceneGraph);
-        for (let bindedMark of this.sceneGraph.root.children) {
-            // console.log(bindedMark)
 
-            for (let mark of bindedMark.items) {
-                mark.render(this.ctx);
+        const render = (sceneGraphNode: SceneGraphNode) => {
+            for (let bindedMark of sceneGraphNode.children) {
+                // console.log(bindedMark)
+
+                for (let mark of bindedMark.items) {
+                    console.log("m ", mark)
+                    mark.render(this.ctx);
+                }
+
+                render(bindedMark);
             }
         }
+
+        render(this.sceneGraph.root)
+        // console.log(this.sceneGraph);
     }
 }
