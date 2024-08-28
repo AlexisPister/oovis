@@ -2,15 +2,12 @@ import {Datum} from "./bind";
 import {SceneGraphNode} from "./sceneGraph.ts";
 
 
-
 // export type MarkGroup = Mark[];
 
 
 interface MarkGroup<Mark> {
     items: Array<Mark>
 }
-
-
 
 
 export class BindedMark extends SceneGraphNode {
@@ -20,8 +17,14 @@ export class BindedMark extends SceneGraphNode {
 }
 
 
-
 type Color = string;
+
+
+interface StyleProperties {
+    fill: Color;
+    stroke: Color;
+    opacity: number;
+}
 
 
 export abstract class Mark {
@@ -32,13 +35,11 @@ export abstract class Mark {
     // scale?: { x: number; y: number };
 
 
-    fill: Color;
-    stroke: Color;
-    opacity: number;
+    styleProperties: StyleProperties;
 
 
-
-    constructor() {
+    constructor(styleProperties: StyleProperties) {
+        this.styleProperties = styleProperties;
     }
 
     bounds() {
@@ -51,6 +52,17 @@ export abstract class Mark {
 
 
     datumToMark(datum: Datum) {
+
+
+        let properties = Object.getPrototypeOf(this);
+        properties = properties.filter(prop => ["styleProperties", "id"])
+
+        for (let prop of properties) {
+
+
+
+        }
+
         let x = computeParam(this.x, datum);
         let y = computeParam(this.y, datum);
         let width = computeParam(this.width, datum);
@@ -59,6 +71,19 @@ export abstract class Mark {
         let mark = new this.constructor(x, y, width, height);
         return mark;
     }
+
+
+
+
+    // datumToMark(datum: Datum) {
+    //     let x = computeParam(this.x, datum);
+    //     let y = computeParam(this.y, datum);
+    //     let width = computeParam(this.width, datum);
+    //     let height = computeParam(this.height, datum);
+    //
+    //     let mark = new this.constructor(x, y, width, height);
+    //     return mark;
+    // }
 
     toBindedMark(data: [], parentNode: SceneGraphNode) {
         let bindedMark = new BindedMark(this.constructor.name, parentNode, null);
@@ -167,7 +192,7 @@ export class Rect extends Mark {
     width: NumberArgument;
     height: NumberArgument;
 
-    constructor(x, y, width, height) {
+    constructor({x, y, width, height}) {
         super();
         this.x = x;
         this.y = y;
