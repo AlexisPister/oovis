@@ -1,5 +1,5 @@
 import {bind} from "./src/bind.ts";
-import {Group, Rect} from "./src/marks";
+import {Group, Line, Rect} from "./src/marks";
 
 let canvas = document.querySelector("canvas");
 
@@ -7,9 +7,13 @@ let vis = bind(
     canvas, [10, 20, 30],
     new Rect(d => d * 4 , 20, 30, 40),
     new Group(
-        new Rect(100 , d => d * 3, 10, 10)
+        new Rect(100 , d => d * 3, 10, 10),
+        new Line( 10, 20, 100, d => d * 4)
     )
 );
+
+
+vis.binder.updateData([10, 20, 50]);
 
 
 // let vis = bind(

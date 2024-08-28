@@ -38,7 +38,7 @@ export class Binder {
     }
 
 
-    updateData(newData: Data, matchBy: (d: Datum) => any) {
+    updateData(newData: Data, matchBy: (d: Datum) => any = (d) => d) {
         const updatedData: Datum[] = [];
         const enteredData: Datum[] = [];
         const removedData: Datum[] = [];

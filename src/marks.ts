@@ -13,7 +13,6 @@ interface MarkGroup<Mark> {
 
 
 
-
 export class BindedMark extends SceneGraphNode {
     constructor(type: string, parent, children) {
         super(type, parent, children)
@@ -21,6 +20,8 @@ export class BindedMark extends SceneGraphNode {
 }
 
 
+
+type Color = string;
 
 
 export abstract class Mark {
@@ -30,6 +31,13 @@ export abstract class Mark {
     // rotation?: number;
     // scale?: { x: number; y: number };
 
+
+    fill: Color;
+    stroke: Color;
+    opacity: number;
+
+
+
     constructor() {
     }
 
@@ -37,15 +45,34 @@ export abstract class Mark {
         //     Abstract
     }
 
-    abstract datumToMark(datum: Datum): Mark
+    // abstract datumToMark(datum: Datum): Mark
 
-    abstract toBindedMark(data: [], parentNode: SceneGraphNode)
+    // abstract toBindedMark(data: [], parentNode: SceneGraphNode)
+
+
+    datumToMark(datum: Datum) {
+        let x = computeParam(this.x, datum);
+        let y = computeParam(this.y, datum);
+        let width = computeParam(this.width, datum);
+        let height = computeParam(this.height, datum);
+
+        let mark = new this.constructor(x, y, width, height);
+        return mark;
+    }
+
+    toBindedMark(data: [], parentNode: SceneGraphNode) {
+        let bindedMark = new BindedMark(this.constructor.name, parentNode, null);
+        for (let datum of data) {
+            bindedMark.addItem(this.datumToMark(datum));
+        }
+        return bindedMark;
+    }
 
     abstract render()
 }
 
 
-type dataCallback = (arg: Datum) => any;
+type dataCallback = (d: Datum, i?: number) => any;
 type NumberArgument = number | dataCallback;
 
 
@@ -108,6 +135,10 @@ export class Line extends Mark {
     }
 
     render(ctx: CanvasRenderingContext2D) {
+        ctx.beginPath(); // Start a new path
+        ctx.moveTo(this.x1, this.y1); // Move the pen to (30, 50)
+        ctx.lineTo(this.x2, this.y2); // Draw a line to (150, 100)
+        ctx.stroke(); // Render the path
     }
 
 }
@@ -158,14 +189,6 @@ export class Rect extends Mark {
 
         let mark = new this.constructor(x, y, width, height);
         return mark;
-    }
-
-    toBindedMark(data: [], parentNode: SceneGraphNode) {
-        let bindedMark = new BindedMark(this.constructor.name, parentNode, null);
-        for (let datum of data) {
-            bindedMark.addItem(this.datumToMark(datum));
-        }
-        return bindedMark;
     }
 }
 
