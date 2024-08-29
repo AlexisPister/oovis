@@ -19,6 +19,8 @@ vis.binder.updateData([10, 20, 50]);
 // let vis = bind(
 //     canvas, [10, 20, 30],
 //     new Rect(d => d * 4 , 20, 30, 40),
+//     new Rect(d => d * 4 , 20, 30, 40).update(null, 20),
+//     new Rect({x: d => d * 4 , y: 20}).update({z: 2000}),
 //     new Group(
 //         new Rect(),
 //         new Line(),

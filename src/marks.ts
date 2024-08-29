@@ -1,13 +1,5 @@
-import {Datum} from "./bind";
+import {Datum, Data} from "./bind";
 import {SceneGraphNode} from "./sceneGraph.ts";
-
-
-// export type MarkGroup = Mark[];
-
-
-interface MarkGroup<Mark> {
-    items: Array<Mark>
-}
 
 
 export class BindedMark extends SceneGraphNode {
@@ -29,12 +21,6 @@ interface StyleProperties {
 
 export abstract class Mark {
     id: string;
-    // children: MarkGroup[];
-    // parent?: Mark | null;
-    // rotation?: number;
-    // scale?: { x: number; y: number };
-
-
     styleProperties: StyleProperties;
 
 
@@ -45,11 +31,6 @@ export abstract class Mark {
     bounds() {
         //     Abstract
     }
-
-    // abstract datumToMark(datum: Datum): Mark
-
-    // abstract toBindedMark(data: [], parentNode: SceneGraphNode)
-
 
     datumToMark(datum: Datum) {
         let properties = Object.getOwnPropertyNames(this);
@@ -68,15 +49,31 @@ export abstract class Mark {
         return mark;
     }
 
-    toBindedMark(data: [], parentNode: SceneGraphNode) {
+    toBindedMark(enterData: Data, exitData: Data, updateData: Data, parentNode: SceneGraphNode) {
         let bindedMark = new BindedMark(this.constructor.name, parentNode, null);
+
         for (let datum of data) {
             bindedMark.addItem(this.datumToMark(datum));
         }
+
         return bindedMark;
     }
 
-    abstract render()
+    // toBindedMark(data: [], parentNode: SceneGraphNode) {
+    //     let bindedMark = new BindedMark(this.constructor.name, parentNode, null);
+    //     for (let datum of data) {
+    //         bindedMark.addItem(this.datumToMark(datum));
+    //     }
+    //     return bindedMark;
+    // }
+
+
+    update({props}, styleProperties) {
+
+
+    }
+
+    abstract render();
 }
 
 
@@ -108,9 +105,7 @@ export class Group extends Mark {
         let groupBindedMark = new BindedMark(this.constructor.name, parentNode, null);
 
         for (let mark of this.marks) {
-            console.log(22)
             let bindedMark = mark.toBindedMark(data, groupBindedMark);
-            // groupBindedMark.addChild(bindedMark);
         }
 
         return groupBindedMark;

@@ -70,44 +70,6 @@ export class Binder {
 
         return {enteredData, removedData, updatedData};
     }
-
-    // updateData(newData: Data, matchBy: (d: Datum) => any) {
-    //     const updatedData: Datum[] = [];
-    //     const enteredData: Datum[] = [];
-    //     const removedData: Datum[] = [];
-    //
-    //     let matchFn = (d1: Datum, d2: Datum) => {
-    //         // return deepEqual(matchBy(d1), matchBy(d2))
-    //         return matchBy(d1) === matchBy(d2)
-    //     }
-    //
-    //     // Create a map for quick lookups
-    //     const map = new Map<Datum, Datum>();
-    //
-    //     // Fill the map with elements from arr2
-    //     this.data.forEach(item => {
-    //         map.set(item, item);
-    //     });
-    //
-    //     // Iterate over arr1 and determine newData and intersect
-    //     newData.forEach(item2 => {
-    //         const matchedInArr = Array.from(map.values()).find(item1 => matchFn(item1, item2));
-    //         if (matchedInArr) {
-    //             updatedData.push(item2);
-    //             // Remove the matched item to handle any duplicates
-    //             map.delete(matchedInArr);
-    //         } else {
-    //             enteredData.push(item2);
-    //         }
-    //     });
-    //
-    //     // The remaining items in map2 are the removedData
-    //     map.forEach((_, key) => {
-    //         removedData.push(key);
-    //     });
-    //
-    //     return {enteredData, removedData, updatedData};
-    // }
 }
 
 
@@ -123,6 +85,27 @@ export function bind(parent: HTMLCanvasElement, data: Data, ...marks: Mark[]) {
     let renderer = new Renderer(parent, binder.sceneGraph);
     renderer.render();
 
-    return {binder, renderer}
+    let vis = new Vis(binder, renderer)
+
+    // return {binder, renderer}
+    return vis
+}
+
+
+class Vis {
+    binder: Binder;
+    renderer: Renderer;
+
+    constructor(binder, renderer) {
+        this.binder = binder;
+        this.renderer = renderer;
+    }
+
+    update(newData) {
+        this.binder.updateData(newData);
+
+
+
+    }
 }
 
