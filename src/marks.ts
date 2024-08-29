@@ -39,7 +39,7 @@ export abstract class Mark {
 
 
     constructor(styleProperties: StyleProperties) {
-        this.styleProperties = styleProperties;
+        this.styleProperties = styleProperties ?? {};
     }
 
     bounds() {
@@ -52,38 +52,21 @@ export abstract class Mark {
 
 
     datumToMark(datum: Datum) {
+        let properties = Object.getOwnPropertyNames(this);
+        properties = properties.filter(prop => !["styleProperties", "id"].includes(prop))
 
-
-        let properties = Object.getPrototypeOf(this);
-        properties = properties.filter(prop => ["styleProperties", "id"])
+        let mark = new this.constructor();
 
         for (let prop of properties) {
-
-
-
+            mark[prop] = computeParam(this[prop], datum);
+        }
+        for (let [nameStyleProp, styleProp] of Object.entries(this.styleProperties)) {
+            // mark[nameStyleProp] = computeParam(styleProp, datum);
+            mark.styleProperties[nameStyleProp] = computeParam(styleProp, datum);
         }
 
-        let x = computeParam(this.x, datum);
-        let y = computeParam(this.y, datum);
-        let width = computeParam(this.width, datum);
-        let height = computeParam(this.height, datum);
-
-        let mark = new this.constructor(x, y, width, height);
         return mark;
     }
-
-
-
-
-    // datumToMark(datum: Datum) {
-    //     let x = computeParam(this.x, datum);
-    //     let y = computeParam(this.y, datum);
-    //     let width = computeParam(this.width, datum);
-    //     let height = computeParam(this.height, datum);
-    //
-    //     let mark = new this.constructor(x, y, width, height);
-    //     return mark;
-    // }
 
     toBindedMark(data: [], parentNode: SceneGraphNode) {
         let bindedMark = new BindedMark(this.constructor.name, parentNode, null);
@@ -183,7 +166,6 @@ export class Path extends Mark {
 
         ctx.fill();
     }
-
 }
 
 export class Rect extends Mark {
@@ -192,8 +174,8 @@ export class Rect extends Mark {
     width: NumberArgument;
     height: NumberArgument;
 
-    constructor({x, y, width, height}) {
-        super();
+    constructor(x, y, width, height, styleProperties) {
+        super(styleProperties);
         this.x = x;
         this.y = y;
         this.width = width;
@@ -206,15 +188,15 @@ export class Rect extends Mark {
         ctx.fill();
     }
 
-    datumToMark(datum: Datum) {
-        let x = computeParam(this.x, datum);
-        let y = computeParam(this.y, datum);
-        let width = computeParam(this.width, datum);
-        let height = computeParam(this.height, datum);
-
-        let mark = new this.constructor(x, y, width, height);
-        return mark;
-    }
+    // datumToMark(datum: Datum) {
+    //     let x = computeParam(this.x, datum);
+    //     let y = computeParam(this.y, datum);
+    //     let width = computeParam(this.width, datum);
+    //     let height = computeParam(this.height, datum);
+    //
+    //     let mark = new this.constructor(x, y, width, height);
+    //     return mark;
+    // }
 }
 
 
