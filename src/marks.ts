@@ -49,10 +49,11 @@ export abstract class Mark {
         return mark;
     }
 
-    toBindedMark(enterData: Data, exitData: Data, updateData: Data, parentNode: SceneGraphNode) {
+    toBindedMark(enteredData: Data, exitedData: Data, updatedData: Data, parentNode: SceneGraphNode) {
         let bindedMark = new BindedMark(this.constructor.name, parentNode, null);
 
-        for (let datum of data) {
+        // for (let datum of data) {
+        for (let datum of enteredData) {
             bindedMark.addItem(this.datumToMark(datum));
         }
 
@@ -101,11 +102,13 @@ export class Group extends Mark {
         return;
     }
 
-    toBindedMark(data: [], parentNode: SceneGraphNode) {
+    // toBindedMark(data: [], parentNode: SceneGraphNode) {
+    toBindedMark(enteredData: Data, exitedData: Data, updatedData: Data, parentNode: SceneGraphNode) {
         let groupBindedMark = new BindedMark(this.constructor.name, parentNode, null);
 
         for (let mark of this.marks) {
-            let bindedMark = mark.toBindedMark(data, groupBindedMark);
+            // let bindedMark = mark.toBindedMark(data, groupBindedMark);
+            let bindedMark = mark.toBindedMark(enteredData, exitedData, updatedData, groupBindedMark);
         }
 
         return groupBindedMark;

@@ -13,7 +13,7 @@ let vis = bind(
 );
 
 
-vis.binder.updateData([10, 20, 50]);
+vis.update([10, 20, 50, 5]);
 
 
 // let vis = bind(
