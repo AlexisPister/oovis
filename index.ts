@@ -5,13 +5,14 @@ let canvas = document.querySelector("canvas");
 
 let vis = bind(
     canvas, [10, 20, 30],
-    new Rect(d => d * 4 , 20, 30, 40),
+    new Rect({x: d => d * 5, y: 20, width:30, height:40}, {}),
     new Group(
-        new Rect(100 , d => d * 3, 10, 10),
+        new Rect({x: 100 , y: d => d * 3, width: 10, height:10}),
         new Line( 10, 20, 100, d => d * 4)
     )
 );
 
+// let r = new Rect({x: 2, y: 20, width:30, height:40}, {})
 
 vis.update([10, 20, 50, 5]);
 

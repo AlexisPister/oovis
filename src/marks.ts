@@ -4,7 +4,7 @@ import {SceneGraphNode} from "./sceneGraph.ts";
 
 export class BindedMark extends SceneGraphNode {
     constructor(type: string, parent, children) {
-        super(type, parent, children)
+        super(type, parent)
     }
 }
 
@@ -13,15 +13,16 @@ type Color = string;
 
 
 interface StyleProperties {
-    fill: Color;
-    stroke: Color;
-    opacity: number;
+    fill?: Color;
+    stroke?: Color;
+    opacity?: number;
 }
 
 
 export abstract class Mark {
     id: string;
     styleProperties: StyleProperties;
+    // properties: Object;
 
 
     constructor(styleProperties: StyleProperties) {
@@ -36,7 +37,7 @@ export abstract class Mark {
         let properties = Object.getOwnPropertyNames(this);
         properties = properties.filter(prop => !["styleProperties", "id"].includes(prop))
 
-        let mark = new this.constructor();
+        let mark = new this.constructor({}, {});
 
         for (let prop of properties) {
             mark[prop] = computeParam(this[prop], datum);
@@ -60,16 +61,9 @@ export abstract class Mark {
         return bindedMark;
     }
 
-    // toBindedMark(data: [], parentNode: SceneGraphNode) {
-    //     let bindedMark = new BindedMark(this.constructor.name, parentNode, null);
-    //     for (let datum of data) {
-    //         bindedMark.addItem(this.datumToMark(datum));
-    //     }
-    //     return bindedMark;
-    // }
 
+    update(props, styleProperties) {
 
-    update({props}, styleProperties) {
 
 
     }
@@ -94,7 +88,7 @@ export class Group extends Mark {
     marks: Mark[];
 
     constructor(...marks: Mark[]) {
-        super();
+        super({});
         this.marks = marks;
     }
 
@@ -172,7 +166,8 @@ export class Rect extends Mark {
     width: NumberArgument;
     height: NumberArgument;
 
-    constructor(x, y, width, height, styleProperties) {
+    constructor({x, y, width, height}, styleProperties={}) {
+    // constructor(props, styleProperties) {
         super(styleProperties);
         this.x = x;
         this.y = y;
