@@ -7,7 +7,14 @@ export class SceneGraph {
     constructor() {
         this.root = new SceneGraphNode("root", null);
     }
+
+    visit() {
+
+    }
 }
+
+// TODO: visit the scene graph for update. Idea: link the mark items to the data items. Have a variable that store the join state, and update accordingly
+
 
 export class SceneGraphNode {
     id: string;

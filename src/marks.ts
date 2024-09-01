@@ -22,11 +22,16 @@ interface StyleProperties {
 export abstract class Mark {
     id: string;
     styleProperties: StyleProperties;
+    datum: Datum;
     // properties: Object;
 
 
     constructor(styleProperties: StyleProperties) {
         this.styleProperties = styleProperties ?? {};
+    }
+
+    linkDatum(datum: Datum) {
+        this.datum = datum;
     }
 
     bounds() {
@@ -38,12 +43,12 @@ export abstract class Mark {
         properties = properties.filter(prop => !["styleProperties", "id"].includes(prop))
 
         let mark = new this.constructor({}, {});
+        mark.linkDatum(datum);
 
         for (let prop of properties) {
             mark[prop] = computeParam(this[prop], datum);
         }
         for (let [nameStyleProp, styleProp] of Object.entries(this.styleProperties)) {
-            // mark[nameStyleProp] = computeParam(styleProp, datum);
             mark.styleProperties[nameStyleProp] = computeParam(styleProp, datum);
         }
 
@@ -63,9 +68,11 @@ export abstract class Mark {
 
 
     update(props, styleProperties) {
+        for (let [propName, propValue] of Object.entries(props)) {
 
+            this[propName] = this[propName].update = propValue;
 
-
+        }
     }
 
     abstract render();
@@ -73,10 +80,22 @@ export abstract class Mark {
 
 
 type dataCallback = (d: Datum, i?: number) => any;
-type NumberArgument = number | dataCallback;
+// type NumberParameter = number | dataCallback;
+// type CategoricalParameter = string | dataCallback;
 
 
-function computeParam(param: NumberArgument, datum: Datum) {
+// type SimpleParameter<T> = NumberParameter | CategoricalParameter;
+type SimpleParameter<T> = T | dataCallback
+type ComplexParameter<T> = {
+    enter?: SimpleParameter<T>,
+    update?: SimpleParameter<T>,
+    exit?: SimpleParameter<T>
+}
+
+type Parameter<T> = SimpleParameter<T> | ComplexParameter<T>
+
+
+function computeParam(param: Parameter, datum: Datum) {
     if (typeof param == "function") {
         param = param(datum)
     }
@@ -161,10 +180,11 @@ export class Path extends Mark {
 }
 
 export class Rect extends Mark {
-    x: NumberArgument;
-    y: NumberArgument;
-    width: NumberArgument;
-    height: NumberArgument;
+    x: Parameter<number>;
+    y: Parameter<number>;
+    width: Parameter<number>;
+    height: Parameter<number>;
+
 
     constructor({x, y, width, height}, styleProperties={}) {
     // constructor(props, styleProperties) {
@@ -180,16 +200,17 @@ export class Rect extends Mark {
         ctx.rect(this.x, this.y, this.width, this.height);
         ctx.fill();
     }
-
-    // datumToMark(datum: Datum) {
-    //     let x = computeParam(this.x, datum);
-    //     let y = computeParam(this.y, datum);
-    //     let width = computeParam(this.width, datum);
-    //     let height = computeParam(this.height, datum);
-    //
-    //     let mark = new this.constructor(x, y, width, height);
-    //     return mark;
-    // }
 }
+
+
+
+
+// let Rect = {
+//     props: {},
+//     styleProps: {},
+//     render: {
+//
+//     }
+// }
 
 

@@ -35,7 +35,6 @@ export class Binder {
             // this.mapData.set(datum, datum);
             this.mapData.set(this.matchDatum(i, datum), datum);
         })
-        console.log(this.mapData)
     }
 
     run(markSpecs) {
