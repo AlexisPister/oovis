@@ -17,7 +17,8 @@ export class Renderer {
             for (let bindedMark of sceneGraphNode.children) {
                 // console.log(bindedMark)
 
-                for (let mark of bindedMark.items) {
+                // for (let mark of bindedMark.items) {
+                for (let mark of bindedMark.dataToItem.values()) {
                     console.log("m ", mark)
                     mark.render(this.ctx);
                 }

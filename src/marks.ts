@@ -3,8 +3,18 @@ import {SceneGraphNode} from "./sceneGraph.ts";
 
 
 export class BindedMark extends SceneGraphNode {
-    constructor(type: string, parent, children) {
+    constructor(type: string, parent) {
         super(type, parent)
+    }
+
+    linkData(data: Data) {
+
+        for (let mark of this.items) {
+
+            // retrieve update status
+
+        }
+
     }
 }
 
@@ -25,24 +35,22 @@ export abstract class Mark {
     datum: Datum;
     // properties: Object;
 
+    markDef: Mark;
 
-    constructor(styleProperties: StyleProperties) {
+    constructor(styleProperties: StyleProperties, markDef: Mark) {
         this.styleProperties = styleProperties ?? {};
+        this.markDef = markDef;
     }
 
     linkDatum(datum: Datum) {
         this.datum = datum;
     }
 
-    bounds() {
-        //     Abstract
-    }
-
     datumToMark(datum: Datum) {
         let properties = Object.getOwnPropertyNames(this);
         properties = properties.filter(prop => !["styleProperties", "id"].includes(prop))
 
-        let mark = new this.constructor({}, {});
+        let mark = new this.constructor({}, {}, this);
         mark.linkDatum(datum);
 
         for (let prop of properties) {
@@ -55,12 +63,13 @@ export abstract class Mark {
         return mark;
     }
 
-    toBindedMark(enteredData: Data, exitedData: Data, updatedData: Data, parentNode: SceneGraphNode) {
-        let bindedMark = new BindedMark(this.constructor.name, parentNode, null);
+    // toBindedMark(enteredData: Data, exitedData: Data, updatedData: Data, parentNode: SceneGraphNode) {
+    toBindedMark(data: Data, parentNode: SceneGraphNode) {
+        let bindedMark = new BindedMark(this.constructor.name, parentNode);
 
-        // for (let datum of data) {
-        for (let datum of enteredData) {
-            bindedMark.addItem(this.datumToMark(datum));
+        for (let datum of data) {
+        // for (let datum of enteredData) {
+            bindedMark.addItem(datum, this.datumToMark(datum));
         }
 
         return bindedMark;
@@ -145,8 +154,8 @@ export class Line extends Mark {
     x2: number;
     y2: number;
 
-    constructor(x1, y1, x2, y2) {
-        super();
+    constructor({x1, y1, x2, y2}, styleProperties={}, markDef: Mark) {
+        super(styleProperties, markDef);
         this.x1 = x1;
         this.y1 = y1;
         this.x2 = x2;
@@ -159,7 +168,6 @@ export class Line extends Mark {
         ctx.lineTo(this.x2, this.y2); // Draw a line to (150, 100)
         ctx.stroke(); // Render the path
     }
-
 }
 
 
@@ -186,9 +194,9 @@ export class Rect extends Mark {
     height: Parameter<number>;
 
 
-    constructor({x, y, width, height}, styleProperties={}) {
+    constructor({x, y, width, height}, styleProperties={}, markDef: Mark) {
     // constructor(props, styleProperties) {
-        super(styleProperties);
+        super(styleProperties, markDef);
         this.x = x;
         this.y = y;
         this.width = width;
@@ -201,16 +209,4 @@ export class Rect extends Mark {
         ctx.fill();
     }
 }
-
-
-
-
-// let Rect = {
-//     props: {},
-//     styleProps: {},
-//     render: {
-//
-//     }
-// }
-
 

@@ -1,4 +1,5 @@
 import {Mark} from "./marks";
+import {Data, Datum} from "./bind.ts";
 
 
 export class SceneGraph {
@@ -8,7 +9,7 @@ export class SceneGraph {
         this.root = new SceneGraphNode("root", null);
     }
 
-    visit() {
+    update(enterData: Data, updateData: Data, exitData: Data) {
 
     }
 }
@@ -23,6 +24,8 @@ export class SceneGraphNode {
     parent: SceneGraphNode;
     items: Array<Mark>;
 
+    dataToItem: Map<Datum, Mark>
+
     constructor(type: string, parent) {
         // TODO
         this.id = "1";
@@ -35,13 +38,22 @@ export class SceneGraphNode {
 
         this.children = [];
         this.items = [];
+
+        this.dataToItem = new Map();
     }
 
-    addItem(mark: Mark) {
-        this.items.push(mark);
+    addItem(datum: Datum, mark: Mark) {
+        // this.items.push(mark);
+        this.dataToItem.set(datum, mark);
     }
 
     addChild(child: SceneGraphNode) {
         this.children.push(child);
+    }
+
+    update(enterData: Data, updateData: Data, exitData: Data) {
+        for (let datum of enterData) {
+            this.dataToItem[datum]
+        }
     }
 }

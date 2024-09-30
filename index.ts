@@ -14,7 +14,7 @@ let vis = bind(
 
 // let r = new Rect({x: 2, y: 20, width:30, height:40}, {})
 
-vis.update([10, 20, 50, 5]);
+vis.update([10, 20, 100]);
 
 
 // let vis = bind(
