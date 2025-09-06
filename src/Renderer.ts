@@ -7,12 +7,11 @@ export class Renderer {
 
     constructor(canvas: HTMLCanvasElement, sceneGraph: SceneGraph) {
         this.canvas = canvas;
-        this.ctx = this.canvas.getContext("2d")
+        this.ctx = this.canvas.getContext("2d");
         this.sceneGraph = sceneGraph;
     }
 
     render() {
-
         const render = (sceneGraphNode: SceneGraphNode) => {
             for (let bindedMark of sceneGraphNode.children) {
                 // console.log(bindedMark)
@@ -20,14 +19,14 @@ export class Renderer {
                 // for (let mark of bindedMark.items) {
                 for (let mark of bindedMark.dataToItem.values()) {
                     console.log("m ", mark)
-                    mark.render(this.ctx);
+                    mark.renderCanvas(this.ctx);
                 }
 
                 render(bindedMark);
             }
         }
 
-        render(this.sceneGraph.root)
+        render(this.sceneGraph.root);
         // console.log(this.sceneGraph);
     }
 }

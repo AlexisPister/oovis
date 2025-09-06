@@ -8,13 +8,12 @@ let vis = bind(
     new Rect({x: d => d * 5, y: 20, width:30, height:40}, {}),
     new Group(
         new Rect({x: 100 , y: d => d * 3, width: 10, height:10}),
-        new Line( 10, 20, 100, d => d * 4)
+        new Line( {x1: 10, x2: 20, y1: 100, y2: d => d * 4})
     )
 );
 
 // let r = new Rect({x: 2, y: 20, width:30, height:40}, {})
-
-vis.update([10, 20, 100]);
+// vis.update([10, 20, 100]);
 
 
 // let vis = bind(
@@ -40,11 +39,7 @@ vis.update([10, 20, 100]);
 //     new Rect()]
 // );
 
-
-
 // vis.update([20, 10, 1000])
-
-
 
 // Rect(10, 20, 10);
 // bind(canvas, [...],

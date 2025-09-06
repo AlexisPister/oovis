@@ -54,8 +54,8 @@ export class Binder {
 
     run() {
         for (let markspec of this.markSpecs) {
-            // markspec.toBindedMark(this.data, this.sceneGraph.root);
-            markspec.toBindedMark(this.enteredData, this.updatedData, this.exitedData, this.sceneGraph.root);
+            markspec.toBindedMark(this.data, this.sceneGraph.root);
+            // markspec.toBindedMark(this.enteredData, this.updatedData, this.exitedData, this.sceneGraph.root);
         }
 
         console.log(this.sceneGraph);
@@ -86,12 +86,10 @@ export class Binder {
 
                 // this.datumToStatus[item2] = Status.update;
 
-
                 // Remove the matched item to handle any duplicates
                 this.mapData.delete(this.matchDatumBy(i2, item2));
             } else {
                 this.enteredData.push(item2);
-
                 // this.datumToStatus[item2] = Status.enter;
             }
         })
@@ -105,11 +103,6 @@ export class Binder {
 
         this.data = newData;
         this.indexData();
-
-        // this.enteredData = enteredData;
-        // this.updatedData = updatedData;
-        // this.enteredData = enteredData;
-        // return {enteredData, removedData, updatedData};
     }
 
 
@@ -169,10 +162,8 @@ export function bind(parent: HTMLCanvasElement, data: Data, ...marks: Mark[]) {
 
     let vis = new Vis(binder, renderer)
 
-    // return {binder, renderer}
     return vis
 }
-
 
 class Vis {
     binder: Binder;

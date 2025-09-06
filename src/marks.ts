@@ -8,13 +8,11 @@ export class BindedMark extends SceneGraphNode {
     }
 
     linkData(data: Data) {
-
         for (let mark of this.items) {
 
             // retrieve update status
 
         }
-
     }
 }
 
@@ -54,6 +52,7 @@ export abstract class Mark {
         mark.linkDatum(datum);
 
         for (let prop of properties) {
+            console.log(prop, this)
             mark[prop] = computeParam(this[prop], datum);
         }
         for (let [nameStyleProp, styleProp] of Object.entries(this.styleProperties)) {
@@ -68,23 +67,19 @@ export abstract class Mark {
         let bindedMark = new BindedMark(this.constructor.name, parentNode);
 
         for (let datum of data) {
-        // for (let datum of enteredData) {
             bindedMark.addItem(datum, this.datumToMark(datum));
         }
 
         return bindedMark;
     }
 
-
     update(props, styleProperties) {
         for (let [propName, propValue] of Object.entries(props)) {
-
             this[propName] = this[propName].update = propValue;
-
         }
     }
 
-    abstract render();
+    abstract renderCanvas(ctx: CanvasRenderingContext2D);
 }
 
 
@@ -136,7 +131,7 @@ export class Group extends Mark {
         return groupBindedMark;
     }
 
-    render() {
+    renderCanvas(ctx) {
         return;
     }
 }
@@ -149,7 +144,7 @@ interface Point {
 
 
 export class Line extends Mark {
-    x1: number;
+    x1: Parameter<number>;
     y1: number;
     x2: number;
     y2: number;
@@ -162,7 +157,7 @@ export class Line extends Mark {
         this.y2 = y2;
     }
 
-    render(ctx: CanvasRenderingContext2D) {
+    renderCanvas(ctx: CanvasRenderingContext2D) {
         ctx.beginPath(); // Start a new path
         ctx.moveTo(this.x1, this.y1); // Move the pen to (30, 50)
         ctx.lineTo(this.x2, this.y2); // Draw a line to (150, 100)
@@ -178,7 +173,7 @@ export class Path extends Mark {
         super();
     }
 
-    render(ctx: CanvasRenderingContext2D) {
+    renderCanvas(ctx: CanvasRenderingContext2D) {
         ctx.beginPath(); // Start a new path
 
         // ctx.path(this.x, this.y, this.width, this.height);
@@ -187,12 +182,12 @@ export class Path extends Mark {
     }
 }
 
+
 export class Rect extends Mark {
     x: Parameter<number>;
     y: Parameter<number>;
     width: Parameter<number>;
     height: Parameter<number>;
-
 
     constructor({x, y, width, height}, styleProperties={}, markDef: Mark) {
     // constructor(props, styleProperties) {
@@ -203,7 +198,7 @@ export class Rect extends Mark {
         this.height = height;
     }
 
-    render(ctx: CanvasRenderingContext2D) {
+    renderCanvas(ctx: CanvasRenderingContext2D) {
         ctx.beginPath(); // Start a new path
         ctx.rect(this.x, this.y, this.width, this.height);
         ctx.fill();
